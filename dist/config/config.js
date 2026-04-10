@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GITHUB = exports.INSTAGRAM = exports.LINKED_IN = exports.ENC_IV_LENGTH = exports.ENC_KEY = exports.SALT_ROUND = exports.APP_EMAIL_PASSWORD = exports.APP_EMAIL = exports.APPLICATION_NAME = exports.DB_URI = exports.PORT = void 0;
+const dotenv_1 = require("dotenv");
+const node_path_1 = require("node:path");
+(0, dotenv_1.config)({ path: (0, node_path_1.resolve)(`./.env.${process.env.NODE_ENV}`) });
+exports.PORT = process.env.PORT;
+exports.DB_URI = process.env.DB_URI;
+exports.APPLICATION_NAME = process.env.APPLICATION_NAME;
+exports.APP_EMAIL = process.env.APP_EMAIL;
+exports.APP_EMAIL_PASSWORD = process.env.APP_EMAIL_PASSWORD;
+exports.SALT_ROUND = Number(process.env.SALT_ROUND) || 10;
+exports.ENC_KEY = process.env.ENC_KEY;
+exports.ENC_IV_LENGTH = Number(process.env.ENC_IV_LENGTH) || 16;
+exports.LINKED_IN = process.env.LINKED_IN;
+exports.INSTAGRAM = process.env.INSTAGRAM;
+exports.GITHUB = process.env.GITHUB;
