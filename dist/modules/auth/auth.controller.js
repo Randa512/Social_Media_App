@@ -40,14 +40,27 @@ const express_1 = require("express");
 const auth_service_1 = __importDefault(require("./auth.service"));
 const response_1 = require("../../common/response");
 const validators = __importStar(require("./auth.validation"));
-const validation_middleware_1 = require("../../middleware/validation.middleware");
+const index_1 = require("../../middleware/index");
 const router = (0, express_1.Router)();
-router.post('/login', (0, validation_middleware_1.validation)(validators.loginSchema), async (req, res, next) => {
-    const user = await auth_service_1.default.login(req.body);
-    return (0, response_1.successResponse)({ res, message: "logged in succesfully", data: user });
+router.post('/login', (0, index_1.validation)(validators.loginSchema), async (req, res, next) => {
+    const data = await auth_service_1.default.login(req.body, `${req.protocol}://${req.host}`);
+    return (0, response_1.successResponse)({ res, message: "logged in succesfully", data });
 });
-router.post('/signup', (0, validation_middleware_1.validation)(validators.signupSchema), async (req, res, next) => {
+router.post('/signup', (0, index_1.validation)(validators.signupSchema), async (req, res, next) => {
     const user = await auth_service_1.default.signup(req.body);
     return (0, response_1.successResponse)({ res, status: 201, data: user });
+});
+router.patch('/confirm_email', (0, index_1.validation)(validators.sendConfirmEmailSchema), async (req, res, next) => {
+    await auth_service_1.default.confirmEmail(req.body);
+    return (0, response_1.successResponse)({ res });
+});
+router.patch('/resend_confirm_email', (0, index_1.validation)(validators.resendConfirmEmailSchema), async (req, res, next) => {
+    await auth_service_1.default.resendConfirmEmail(req.body);
+    return (0, response_1.successResponse)({ res });
+});
+router.post('/signup/gmail', async (req, res, next) => {
+    console.log("BODY:", req.body);
+    const { status, credentials } = await auth_service_1.default.signupWithGmail(req.body.idToken, `${req.protocol}://${req.host}`);
+    return (0, response_1.successResponse)({ res, status, data: { credentials } });
 });
 exports.default = router;

@@ -1,8 +1,10 @@
 import express from "express"
-import { authRouter } from "./modules";
+import { authRouter, userRouter } from "./modules";
 import { globalErrorHandler } from "./middleware";
 import { PORT } from "./config/config";
 import connectDB from "./DB/connection.db";
+import { redisService } from "./common/services";
+import cors from 'cors'
 
 export const bootstrap = async (): Promise<void> => {
     const app: express.Express = express();
@@ -10,7 +12,11 @@ export const bootstrap = async (): Promise<void> => {
     // DB connection
     await connectDB();
 
-    app.use(express.json());
+    //REDIS CONNECTION
+    await redisService.connect();
+
+
+    app.use(cors(), express.json());
 
     app.get("/", (req: express.Request, res: express.Response, next: express.NextFunction) => {
         res.json("Landing Page 😎")
@@ -18,7 +24,7 @@ export const bootstrap = async (): Promise<void> => {
 
     // application routing
     app.use('/auth', authRouter)
-    // app.use('/user', userRouter)
+    app.use('/user', userRouter)
 
     // invalid routing
     app.get('/*dummy', (req: express.Request, res: express.Response, next: express.NextFunction) => {

@@ -9,14 +9,18 @@ const modules_1 = require("./modules");
 const middleware_1 = require("./middleware");
 const config_1 = require("./config/config");
 const connection_db_1 = __importDefault(require("./DB/connection.db"));
+const services_1 = require("./common/services");
+const cors_1 = __importDefault(require("cors"));
 const bootstrap = async () => {
     const app = (0, express_1.default)();
     await (0, connection_db_1.default)();
-    app.use(express_1.default.json());
+    await services_1.redisService.connect();
+    app.use((0, cors_1.default)(), express_1.default.json());
     app.get("/", (req, res, next) => {
         res.json("Landing Page 😎");
     });
     app.use('/auth', modules_1.authRouter);
+    app.use('/user', modules_1.userRouter);
     app.get('/*dummy', (req, res, next) => {
         return res.status(404).json({ message: "Invalid Application Routing" });
     });

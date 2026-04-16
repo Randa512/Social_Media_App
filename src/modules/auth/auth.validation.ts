@@ -16,3 +16,16 @@ export const signupSchema = {
     }).refine((data) => { return data.password === data.confirmPassword },
         { message: 'Password and confirm Password doesnt match' })
 }
+
+export const resendConfirmEmailSchema = {
+    body: z.strictObject({
+        email: generalValidationFields.email
+    })
+
+}
+
+export const sendConfirmEmailSchema = {
+    body: resendConfirmEmailSchema.body.extend({
+        otp: generalValidationFields.otp
+    })
+}
